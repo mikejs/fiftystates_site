@@ -1,0 +1,12 @@
+{% extends "fiftystates/base.html" %}
+
+{% block content %}
+<h2>Available States:</h2>
+
+<ul>
+{% for state in states %}
+	<ul><a href="{{ state.get_absolute_url }}">{{ state.name }}</a></ul>
+{% endfor %}
+</ul>
+
+{% endblock %}

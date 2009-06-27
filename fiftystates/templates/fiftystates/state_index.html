@@ -1,0 +1,12 @@
+{% extends "fiftystates/base.html" %}
+
+{% block content %}
+
+<h2>Recently acted upon bills:</h2>
+<ul>
+{% for bill in recent_bills %}
+	<li><a href="{{ bill.get_absolute_url }}">{{ bill.bill_id }}: {{ bill.title|truncatewords:15 }}</a></li>
+{% endfor %}
+</ul>
+
+{% endblock %}

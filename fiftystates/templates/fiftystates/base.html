@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<title>
+		{% block title %}Fifty State Project{% endblock %}{% if state %}: 
+		{{ state.name }}{% endif %}
+	</title>
+</head>	
+<body>
+	
+	<div id="header">
+	{% block header %}
+		<h1>
+			Fifty State Project{% if state %}: {{ state.name }}{% endif %}
+		</h1>
+	{% endblock %}
+	</div>
+	
+	<div id="content">
+	{% block content %}{% endblock %}
+	</div>
+
+	<div id="footer">
+	{% block footer %}{% endblock %}
+	</div>
+
+</body>
+</html>
