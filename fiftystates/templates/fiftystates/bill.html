@@ -4,6 +4,15 @@
 
 {% block title %}{{ bill.bill_id }} -- {{ bill.title }}{% endblock %}
 
+{% block feeds %}
+<link rel="alternate" type="application/atom+xml"
+	title="{{ bill.bill_id }} Actions"
+	href="{{ actions_feed_url }}">
+<link rel="alternate" type="application/atom+xml"
+	title="{{ bill.bill_id }} Sponsors"
+	href="{{ sponsors_feed_url }}">
+{% endblock %}
+
 {% block content %}
 
 <h2>{{ bill.bill_id }}: {{ bill.official_title }}</h2>

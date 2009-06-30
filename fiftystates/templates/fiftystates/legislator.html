@@ -1,5 +1,11 @@
 {% extends "fiftystates/base.html" %}
 
+{% block feeds %}
+<link rel="alternate" type="application/atom+xml"
+	title="{{ legislator.full_name}} Sponsorships"
+	href="{{ sponsorships_feed_url }}">
+{% endblock %}
+
 {% block content %}
 
 <h2>{{ legislator.full_name }}</h2>

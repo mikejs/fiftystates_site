@@ -60,6 +60,7 @@ class Bill(models.Model):
     official_title = models.TextField()
     short_title = models.TextField(blank=True)
     last_action = models.DateTimeField(blank=True, null=True)
+    date_added = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ('-last_action',)
@@ -82,6 +83,7 @@ class Sponsor(models.Model):
     bill = models.ForeignKey(Bill)
     legislator = models.ForeignKey(Legislator)
     type = models.CharField(max_length=15)
+    date_added = models.DateTimeField(auto_now_add=True)
 
 class Version(models.Model):
     bill = models.ForeignKey(Bill)
