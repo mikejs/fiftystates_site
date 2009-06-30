@@ -36,28 +36,17 @@ class Command(BaseCommand):
             state.save()
 
             for (session_name, details) in metadata['session_details'].items():
-                try:
-                    session = state.session_set.get(
-                        name=session_name)
-                except:
-                    session = Session(state=state, name=session_name)
-
-                session.start_year = details['years'][0]
-                session.end_year = details['years'][-1]
-                session.save()
+                (session, c) = state.session_set.get_or_create(
+                    name=session_name,
+                    defaults={'start_year': details['years'][0],
+                              'end_year': details['years'][-1]})
 
                 for sub in details['sub_sessions']:
-                    try:
-                        sub_session = state.session_set.get(
-                            name=sub)
-                    except Session.DoesNotExist:
-                        sub_session = Session(state=state,
-                                              name=sub)
-
-                    sub_session.parent = session
-                    sub_session.start_year = session.start_year
-                    sub_session.end_year = session.end_year
-                    sub_session.save()
+                    state.session_set.get_or_create(
+                        name=sub,
+                        defaults={'start_year': session.start_year,
+                                  'end_year': session.end_year,
+                                  'parent': session})
 
             for name in glob.glob(os.path.join(
                     dir, 'legislators', '*.json')):
@@ -75,17 +64,18 @@ class Command(BaseCommand):
 
     def import_bill(self, data, state):
         session = state.session_set.get(name=data['session'])
-        
-        try:
-            bill = state.bill_set.get(bill_id=data['bill_id'],
-                                      session=session)
-        except Bill.DoesNotExist:
-            bill = Bill(state=state, bill_id=data['bill_id'],
-                        session=session)
 
-        bill.official_title = data['title']
-        bill.chamber = data['chamber']
-        bill.save()
+        (bill, created) = state.bill_set.select_related(
+            'action__bill', 'version__bill',
+            'sponsor__bill').get_or_create(
+            bill_id=data['bill_id'],
+            session=session,
+            chamber=data['chamber'],
+            state=state)
+
+        if data['title'] != bill.official_title:
+            bill.official_title = data['title']
+            bill.save()
 
         print "Importing %s" % bill
 
@@ -126,18 +116,13 @@ class Command(BaseCommand):
                                                   
     def import_legislator(self, data, state):
         # Try to find an existing legislator to merge with:
-        try:
-            leg = Legislator.objects.get(state=state,
-                                         full_name=data['full_name'])
-        except Legislator.DoesNotExist:
-            leg = Legislator(state=state, full_name=data['full_name'])
-
-        leg.first_name = data['first_name']
-        leg.last_name = data['last_name']
-        leg.middle_name = data['middle_name']
-        leg.suffix = data.get('suffix', '') or ''
-        leg.party = data['party']
-        leg.save()
+        (leg, created) = Legislator.objects.get_or_create(
+            state=state, full_name=data['full_name'],
+            defaults={'first_name': data['first_name'],
+                      'last_name': data['last_name'],
+                      'middle_name': data['middle_name'],
+                      'suffix': data.get('suffix', '') or '',
+                      'party': data['party']})
 
         session = state.session_set.get(name=data['session'])
 
