@@ -1,4 +1,5 @@
 from django.db import models
+import urllib
 
 class State(models.Model):
     name = models.CharField(max_length=25)
@@ -15,7 +16,7 @@ class State(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return '/%s/' % self.abbreviation
+        return urllib.quote('/%s/' % self.abbreviation)
 
 class Session(models.Model):
     state = models.ForeignKey(State)
@@ -37,8 +38,10 @@ class Legislator(models.Model):
     party = models.CharField(max_length=20, blank=True)
 
     def get_absolute_url(self):
-        return "/%s/legislator/%s/" % (self.state.abbreviation,
-                                       self.id)
+        return urllib.quote("/%s/legislator/%s/" % (
+                self.state.abbreviation,
+                self.id))
+
     def __unicode__(self):
         return "%s %s" % (self.state.name, self.full_name)
     
@@ -69,10 +72,11 @@ class Bill(models.Model):
         return "%s %s" % (self.session, self.bill_id)
 
     def get_absolute_url(self):
-        return "/%s/bill/%s/%s/%s/" % (self.state.abbreviation,
-                                       self.session.name,
-                                       self.chamber,
-                                       self.bill_id)
+        return urllib.quote("/%s/bill/%s/%s/%s/" % (
+                self.state.abbreviation,
+                self.session.name,
+                self.chamber,
+                self.bill_id))
 
 class Sponsor(models.Model):
     bill = models.ForeignKey(Bill)
