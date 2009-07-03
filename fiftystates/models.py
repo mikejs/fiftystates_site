@@ -21,7 +21,7 @@ class State(models.Model):
 class Session(models.Model):
     state = models.ForeignKey(State)
     parent = models.ForeignKey('self', blank=True, null=True)
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, db_index=True)
     start_year = models.PositiveIntegerField()
     end_year = models.PositiveIntegerField()
 
@@ -30,7 +30,7 @@ class Session(models.Model):
 
 class Legislator(models.Model):
     state = models.ForeignKey(State)
-    full_name = models.CharField(max_length=50)
+    full_name = models.CharField(max_length=50, db_index=True)
     first_name = models.CharField(max_length=15)
     middle_name = models.CharField(max_length=15, blank=True)
     last_name = models.CharField(max_length=15)
@@ -48,15 +48,15 @@ class Legislator(models.Model):
 class Role(models.Model):
     legislator = models.ForeignKey(Legislator)
     state = models.ForeignKey(State)
-    chamber = models.CharField(max_length=5)
-    district = models.CharField(max_length=20)
+    chamber = models.CharField(max_length=5, db_index=True)
+    district = models.CharField(max_length=20, db_index=True)
     session = models.ForeignKey(Session)
 
 class Bill(models.Model):
     state = models.ForeignKey(State)
     session = models.ForeignKey(Session)
-    chamber = models.CharField(max_length=5)
-    bill_id = models.CharField(max_length=15)
+    chamber = models.CharField(max_length=5, db_index=True)
+    bill_id = models.CharField(max_length=30, db_index=True)
     official_title = models.TextField()
     short_title = models.TextField(blank=True)
     last_action = models.DateTimeField(blank=True, null=True)
@@ -82,26 +82,26 @@ class Bill(models.Model):
 class Sponsor(models.Model):
     bill = models.ForeignKey(Bill)
     legislator = models.ForeignKey(Legislator)
-    type = models.CharField(max_length=15)
+    type = models.CharField(max_length=30, db_index=True)
     date_added = models.DateTimeField(auto_now_add=True)
 
 class Version(models.Model):
     bill = models.ForeignKey(Bill)
-    name = models.TextField()
-    url = models.URLField()
+    name = models.CharField(max_length=150, db_index=True)
+    url = models.URLField(db_index=True)
 
 class Action(models.Model):
     bill = models.ForeignKey(Bill)
-    date = models.DateTimeField()
-    actor = models.CharField(max_length=15)
-    action = models.TextField()
+    date = models.DateTimeField(db_index=True)
+    actor = models.CharField(max_length=50, db_index=True)
+    action = models.CharField(max_length=150, db_index=True)
 
     class Meta:
         ordering = ('-date',)
 
 class Vote(models.Model):
     bill = models.ForeignKey(Bill)
-    date = models.DateField()
+    date = models.DateTimeField(db_index=True)
     motion = models.TextField()
     passed = models.BooleanField()
     yes_count = models.PositiveIntegerField(blank=True, null=True)
@@ -111,4 +111,4 @@ class Vote(models.Model):
 class SpecificVote(models.Model):
     vote = models.ForeignKey(Vote)
     legislator = models.ForeignKey(Legislator)
-    type = models.CharField(max_length=10)
+    type = models.CharField(max_length=10, db_index=True)
