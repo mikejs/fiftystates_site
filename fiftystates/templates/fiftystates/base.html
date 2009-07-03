@@ -9,13 +9,40 @@
 	{% block feeds %}{% endblock %}
 </head>	
 <body>
-	
+
 	<div id="header">
+
 	{% block header %}
 		<h1>
-			Fifty State Project{% if state %}: {{ state.name }}{% endif %}
+			{% if state %}
+				<a href="{{ state.get_absolute_url }}">Fifty State Project: {{ state.name }}</a>
+			{% else %}
+				<a href="/">Fifty State Project</a>
+			{% endif %}
 		</h1>
 	{% endblock %}
+
+		<div id="nav">
+		{% block nav %}
+
+			{% if state %}
+				<ul>
+					<li><a href="{{ state.get_absolute_url }}bills/">Bills</a></li>
+					<li>
+						<a href="{{ state.get_absolute_url }}legislators/upper/">
+							{{ state.upper_chamber_title }}s
+						</a>
+					</li>
+					<li>
+						<a href="{{ state.get_absolute_url }}legislators/lower/">
+							{{ state.lower_chamber_title }}s
+						</a>
+					</li>
+				</ul>
+			{% endif %}
+		{% endblock %}
+		</div>
+
 	</div>
 	
 	<div id="content">

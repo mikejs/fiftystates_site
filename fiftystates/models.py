@@ -18,6 +18,20 @@ class State(models.Model):
     def get_absolute_url(self):
         return urllib.quote('/%s/' % self.abbreviation)
 
+    @property
+    def current_session(self):
+        # This should be provided by the state parsers...
+        session = self.session_set.order_by('-start_year')[0]
+        if session.parent:
+            return session.parent
+        return session
+
+    def chamber_name(self, chamber):
+        if chamber == 'upper':
+            return self.upper_chamber_name
+        else:
+            return self.lower_chamber_name
+
 class Session(models.Model):
     state = models.ForeignKey(State)
     parent = models.ForeignKey('self', blank=True, null=True)

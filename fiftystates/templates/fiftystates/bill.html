@@ -53,16 +53,16 @@
 	</ul>
 {% endif %}
 
-<h3>Comments</h3>
 {% get_free_threaded_comment_tree for bill as tree %}
+<h3>Comments ({{ tree|length }})</h3>
 {% for comment in tree %}
 	<div style="margin-left: {{ comment.depth }}em;" class="comment">
-			<a href="{{ comment.website }}">{{ comment.name }}</a> said:<br/>
+			<em>{{ comment.name }}</em> said:<br/>
 			{% auto_transform_markup comment %}
     </div>
 {% endfor %}
 
-<p>Reply to Original:</p>
+<p>Add a comment:</p>
 <form method="POST" action="{% get_free_comment_url bill %}">
 	<ul>
 		{% get_free_threaded_comment_form as form %}

@@ -1,0 +1,22 @@
+{% extends "fiftystates/base.html" %}
+
+{% block content %}
+
+<h2>Bills - {{ state.upper_chamber_name }}</h2>
+<ul>
+{% for bill in upper_bills %}
+	<li><a href="{{ bill.get_absolute_url }}">{{ bill.bill_id }}: {{ bill.title|truncatewords:15 }}</a></li>
+{% endfor %}
+
+	<li>And <a href="{{ state.get_absolute_url }}bills/upper/">{{ upper_count }} more...</a></li>
+</ul>
+
+<h2>Bills - {{ state.lower_chamber_name }}</h2>
+<ul>
+{% for bill in lower_bills %}
+	<li><a href="{{ bill.get_absolute_url }}">{{ bill.bill_id }}: {{ bill.title|truncatewords:15 }}</a></li>
+{% endfor %}
+
+	<li>And <a href="{{ state.get_absolute_url }}bills/lower/">{{ lower_count }} more...</a></li>
+</ul>
+{% endblock %}
