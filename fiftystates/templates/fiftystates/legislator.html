@@ -10,6 +10,16 @@
 
 <h2>{{ legislator.full_name }}</h2>
 
+{% if roles %}
+	<h3>Roles</h3>
+	<ul>
+	{% for role in roles %}
+		<li>{{ role.term }}: Served as the {{ role.title }} for district
+			{{ role.district }} of the {{ role.state.name }} {{ role.chamber_name }}</li>
+	{% endfor %}
+	</ul>
+{% endif %}
+
 {% if sponsorships %}
 	<h3>Sponsored Bills</h3>
 	<ul>

@@ -52,6 +52,30 @@ class Role(models.Model):
     district = models.CharField(max_length=20, db_index=True)
     session = models.ForeignKey(Session)
 
+    @property
+    def title(self):
+        if self.chamber == 'upper':
+            return self.state.upper_chamber_title
+        else:
+            return self.state.lower_chamber_title
+
+    @property
+    def chamber_name(self):
+        if self.chamber == 'upper':
+            return self.state.upper_chamber_name
+        else:
+            return self.state.lower_chamber_name
+
+    @property
+    def term(self):
+        start_year = self.session.start_year
+        end_year = self.session.end_year
+
+        if start_year != end_year:
+            return "%d-%d" % (start_year, end_year)
+        else:
+            return str(start_year)
+
 class Bill(models.Model):
     state = models.ForeignKey(State)
     session = models.ForeignKey(Session)

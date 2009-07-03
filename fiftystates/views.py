@@ -62,7 +62,7 @@ def legislator(request, state, id):
     except Legislator.DoesNotExist:
         raise Http404
 
-    roles = legislator.role_set.all()
+    roles = legislator.role_set.order_by('-session__start_year').all()
     votes = legislator.specificvote_set.select_related('vote').order_by('-vote__date').all()[:10]
     sponsorships = legislator.sponsor_set.select_related('bill').order_by('-id').all()[:10]
 
