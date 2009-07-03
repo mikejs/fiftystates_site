@@ -18,7 +18,7 @@
 <h2>{{ bill.bill_id }}: {{ bill.title }}</h2>
 
 {% if actions %}
-	<h3>Actions:</h3>
+	<h3>Actions</h3>
 	<ul>
 	{% for action in actions %}
 		<li>{{ action.date|date }}: {{ action.action }}</li>
@@ -27,7 +27,7 @@
 {% endif %}
 
 {% if sponsors %}
-	<h3>Sponsors:</h3>
+	<h3>Sponsors ({{ sponsors|length }})</h3>
 	<ul>
 	{% for sponsor in sponsors %}
 		<li><a href="{{ sponsor.legislator.get_absolute_url }}">{{ sponsor.legislator.full_name }}</a></li>
@@ -45,7 +45,7 @@
 {% endif %}
 
 {% if votes %}
-	<h3>Votes:</h3>
+	<h3>Votes</h3>
 	<ul>
 	{% for vote in votes %}
 		<li>{{ vote.date}}: {{ vote.motion }} <em>{% if vote.passed %}PASSED{% else %}FAILED{% endif %}</em></li>

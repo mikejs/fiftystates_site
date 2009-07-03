@@ -5,7 +5,7 @@
 
 <ul>
 {% for state in states %}
-	<ul><a href="{{ state.get_absolute_url }}">{{ state.name }}</a></ul>
+	<li><a href="{{ state.get_absolute_url }}">{{ state.name }}</a></li>
 {% endfor %}
 </ul>
 

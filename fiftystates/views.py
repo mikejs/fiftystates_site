@@ -33,7 +33,7 @@ def bill(request, state, session, chamber, bill_id):
         raise Http404
 
     actions = bill.action_set.all()
-    sponsors = bill.sponsor_set.select_related('legislator')
+    sponsors = bill.sponsor_set.select_related('legislator').order_by('legislator__full_name')
     versions = bill.version_set.all().order_by('-id')
     votes = bill.vote_set.all()
 
