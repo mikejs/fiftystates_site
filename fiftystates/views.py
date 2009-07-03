@@ -46,7 +46,8 @@ def bill(request, state, session, chamber, bill_id):
             bill.chamber, bill.bill_id))
 
     return render_to_response('fiftystates/bill.html',
-                              {'bill': bill,
+                              {'state': bill.state,
+                               'bill': bill,
                                'actions': actions,
                                'sponsors': sponsors,
                                'versions': versions,
@@ -62,6 +63,8 @@ def legislator(request, state, id):
         raise Http404
 
     roles = legislator.role_set.all()
+    votes = legislator.specificvote_set.select_related('vote').order_by('-vote__date').all()[:10]
+    sponsorships = legislator.sponsor_set.select_related('bill').order_by('-id').all()[:10]
 
     sponsorships_feed_url = urllib.quote(
         "/feeds/sponsorships/%s/%s" % (
@@ -69,7 +72,10 @@ def legislator(request, state, id):
 
     return render_to_response(
         'fiftystates/legislator.html',
-        {'legislator': legislator,
+        {'state': legislator.state,
+         'legislator': legislator,
          'roles': roles,
+         'sponsorships': sponsorships,
+         'votes': votes,
          'sponsorships_feed_url': sponsorships_feed_url})
 

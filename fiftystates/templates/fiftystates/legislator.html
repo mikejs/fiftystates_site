@@ -10,4 +10,26 @@
 
 <h2>{{ legislator.full_name }}</h2>
 
+{% if sponsorships %}
+	<h3>Sponsored Bills</h3>
+	<ul>
+	{% for sponsorship in sponsorships %}
+		<li><a href="{{ sponsorship.bill.get_absolute_url }}">{{ sponsorship.bill.bill_id}}:
+			{{ sponsorship.bill.title }}</a></li>
+	{% endfor %}
+	</ul>
+{% endif %}
+
+{% if votes %}
+	<h3>Votes</h3>
+	<ul>
+	{% for vote in votes %}
+		<li>Voted '{{ vote.type }}' on motion '{{ vote.vote.motion }}' for
+			<a href="{{ vote.vote.bill.get_absolute_url }}">{{ vote.vote.bill.bill_id }}</a>
+			on {{ vote.vote.date|date }}
+		</li>
+	{% endfor %}
+	</ul>
+{% endif %}
+
 {% endblock %}
