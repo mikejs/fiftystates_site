@@ -3,13 +3,15 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.http import Http404, HttpResponseRedirect
 
 def index(request):
-    states = State.objects.all()
+    states = State.objects.order_by('name').all()
+
     return render_to_response('fiftystates/index.html',
                               {'states': states})
 
 def state_index(request, state):
     state = get_object_or_404(State, abbreviation=state)
-    recent_bills = state.bill_set.all()[:5]
+
+    recent_bills = state.bill_set.all()[:20]
 
     new_bills_feed_url = urllib.quote("/feeds/new_bills/%s" % (
             state.abbreviation))
@@ -21,10 +23,19 @@ def state_index(request, state):
          'new_bills_feed_url': new_bills_feed_url})
 
 def bill(request, state, session, chamber, bill_id):
-    bill = get_object_or_404(Bill,
-                             state__abbreviation=state,
-                             session__name=session,
-                             chamber=chamber, bill_id=bill_id)
+    try:
+        bill = Bill.objects.select_related('state', 'session').get(
+            state__abbreviation=state,
+            session__name=session,
+            chamber=chamber,
+            bill_id=bill_id)
+    except Bill.DoesNotExist:
+        raise Http404
+
+    actions = bill.action_set.all()
+    sponsors = bill.sponsor_set.select_related('legislator')
+    versions = bill.version_set.all().order_by('-id')
+    votes = bill.vote_set.all()
 
     actions_feed_url = urllib.quote("/feeds/actions/%s/%s/%s/%s" % (
             bill.state.abbreviation, bill.session.name,
@@ -36,11 +47,21 @@ def bill(request, state, session, chamber, bill_id):
 
     return render_to_response('fiftystates/bill.html',
                               {'bill': bill,
+                               'actions': actions,
+                               'sponsors': sponsors,
+                               'versions': versions,
+                               'votes': votes,
                                'actions_feed_url': actions_feed_url,
                                'sponsors_feed_url': sponsors_feed_url})
 
 def legislator(request, state, id):
-    legislator = get_object_or_404(Legislator, pk=id)
+    try:
+        legislator = Legislator.objects.select_related(
+            'state').get(state__abbreviation=state, pk=id)
+    except Legislator.DoesNotExist:
+        raise Http404
+
+    roles = legislator.role_set.all()
 
     sponsorships_feed_url = urllib.quote(
         "/feeds/sponsorships/%s/%s" % (
@@ -49,5 +70,6 @@ def legislator(request, state, id):
     return render_to_response(
         'fiftystates/legislator.html',
         {'legislator': legislator,
+         'roles': roles,
          'sponsorships_feed_url': sponsorships_feed_url})
 
