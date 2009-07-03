@@ -1,0 +1,16 @@
+{% extends "fiftystates/base.html" %}
+
+{% block content %}
+
+<h2>{{ state.name }} {{ chamber_name }} District {{ district }}</h2>
+
+{% if roles %}
+	<h3>{{ title }}s</h3>
+	<ul>
+	{% for role in roles %}
+		<li>{{ role.term }}: <a href="{{ role.legislator.get_absolute_url }}">{{ role.legislator.full_name }}</a></li>
+	{% endfor %}
+	</ul>
+{% endif %}
+
+{% endblock %}

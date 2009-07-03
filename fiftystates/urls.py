@@ -21,6 +21,7 @@ urlpatterns = patterns('fiftystates.views',
     (r'^(?P<state>[a-zA-Z]{2,2})/$', 'state_index'),
     (r'^(?P<state>[a-zA-Z]{2,2})/bill/(?P<session>.+)/(?P<chamber>upper|lower)/(?P<bill_id>.+)/$', 'bill'),
     (r'^(?P<state>[a-zA-Z]{2,2})/legislator/(?P<id>\d+)/', 'legislator'),
+    (r'^(?P<state>[a-zA-Z]{2,2})/district/(?P<chamber>upper|lower)/(?P<name>.+)/$', 'district'),
     #(r'^(?P<state>[a-zA-Z]{2,2})/search', 'search'),
 )
 

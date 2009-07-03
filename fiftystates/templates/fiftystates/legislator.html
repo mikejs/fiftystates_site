@@ -15,7 +15,9 @@
 	<ul>
 	{% for role in roles %}
 		<li>{{ role.term }}: Served as the {{ role.title }} for district
-			{{ role.district }} of the {{ role.state.name }} {{ role.chamber_name }}</li>
+			<a href="/{{ state.abbreviation }}/district/{{ role.chamber }}/{{ role.district }}">
+				{{ role.district }}
+			</a> of the {{ role.state.name }} {{ role.chamber_name }}</li>
 	{% endfor %}
 	</ul>
 {% endif %}

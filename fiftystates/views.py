@@ -79,3 +79,22 @@ def legislator(request, state, id):
          'votes': votes,
          'sponsorships_feed_url': sponsorships_feed_url})
 
+def district(request, state, chamber, name):
+    state = get_object_or_404(State, abbreviation=state)
+    roles = Role.objects.select_related('legislator').filter(
+        state=state,
+        chamber=chamber,
+        district=name).order_by('-session__start_year')
+
+    if len(roles) == 0:
+        raise Http404
+
+    chamber_name = roles[0].chamber_name
+    title = roles[0].title
+
+    return render_to_response('fiftystates/district.html',
+                              {'state': state,
+                               'district': name,
+                               'chamber_name': chamber_name,
+                               'title': title,
+                               'roles': roles})
